@@ -13,11 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-//        TODO: prouci GIT, Version Control Systems
-//        TODO: pogledati instanceof, casting
-//        TODO: pogledati heap, stack i pointer
-// TODO: napravi novi projekt -> maven project, uploadati na git -> imena nisu bitna, njega takoder upload na github
-// todo: stala sam na 6. videu iz cjeline 14
 
 public class Main {
 
