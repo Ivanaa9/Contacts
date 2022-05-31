@@ -1,5 +1,3 @@
-package main.data;
-
 public class SQLManager {
 
     public static void createTables(){

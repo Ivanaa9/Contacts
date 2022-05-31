@@ -1,5 +1,3 @@
-package main.model;
-
 public abstract class EntitySuper {
     private int id;
     private String tel_number;

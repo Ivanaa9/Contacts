@@ -1,5 +1,3 @@
-package main.model;
-
 public class Person extends EntitySuper {
     private String firstname;
     private String lastname;

@@ -1,6 +1,3 @@
-package main.model;
-
-
 public class Company extends EntitySuper {
     private String companyName;  // comname - ime firme
 

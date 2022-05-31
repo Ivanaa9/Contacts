@@ -1,5 +1,3 @@
-package main;
-
 import main.data.MySQL;
 import main.data.SQLManager;
 import main.model.Company;

@@ -1,5 +1,3 @@
-package main.model;
-
 public class History extends EntitySuper {
     private int history_id;
     private static int counter = 0;
