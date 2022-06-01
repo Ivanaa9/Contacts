@@ -17,12 +17,12 @@ public class MySQL {
     public static final String updateCompany = "UPDATE company SET company_name=?, tel_number=?, email=? WHERE company_id = ?";
     public static final String updatePerson = "UPDATE person SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
 
-    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id)";
+    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id) AND UPDATE TIMESTAMP"; //TODO  PROVJERI KAKO UBACITI TIMESTAMP!
     public static final String updateHistoryPerson = "INSERT INTO call_history call_history(person_id)";
 
     public static final String deleteCompany = "DELETE FROM company WHERE company_id = ? ";
     public static final String deletePerson = "DELETE FROM person WHERE person_id = ? ";
-// todo call start, call en
+
 
     public static boolean updateHistoryPerson(Person person) {
         try (CallableStatement st = connection.prepareCall(updateHistoryPerson)) {
