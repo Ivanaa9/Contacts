@@ -78,7 +78,7 @@ public class MySQL {
             cstmt.setInt(1, company.getId());
             cstmt.setString(2, company.getCompanyName());
             cstmt.setString(3, company.getTel_number());
-            cstmt.setString(4, company.getEmail());
+            cstmt.setString(4, company.getEmail());   // ?? u klasama Company i Person nemam gettere za tel_number, email, samo za imena
             cstmt.execute();
             return true;
         } catch (SQLException e) {
