@@ -17,11 +17,47 @@ public class MySQL {
     public static final String updateCompany = "UPDATE company SET company_name=?, tel_number=?, email=? WHERE company_id = ?";
     public static final String updatePerson = "UPDATE person SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
 
-    public static final String updateHistory = "UPDATE call_history SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
+    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id)";
+    public static final String updateHistoryPerson = "INSERT INTO call_history call_history(person_id)";
 
     public static final String deleteCompany = "DELETE FROM company WHERE company_id = ? ";
     public static final String deletePerson = "DELETE FROM person WHERE person_id = ? ";
 // todo call start, call en
+
+    public static boolean updateHistoryPerson(Person person) {
+        try (CallableStatement st = connection.prepareCall(updateHistoryPerson)) {
+            st.setInt(5,person.getId());
+            st.setString(1, person.getFirstname());
+            st.setString(2, person.getLastname());
+            st.setString(3, person.getTel_number());
+            st.setString(4, person.getEmail());
+
+            st.execute();
+            return true
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean updateHistoryCompany(Company company) {
+        try (CallableStatement st = connection.prepareCall(updateHistoryCompany)) {
+
+            st.setInt(4, company.getId());
+            st.setString(1, company.getCompanyName());
+            st.setString(2, company.getTel_number());
+            st.setString(3, company.getEmail());
+
+            st.execute();
+            return true;
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
 
     public static Statement getConnection() {
         connection = null;
@@ -60,6 +96,7 @@ public class MySQL {
         getConnection();
         try {
             statement.execute(sql);
+            System.out.println("UŠLA");
         } catch (Exception exception) {
             exception.printStackTrace();
         }

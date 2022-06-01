@@ -27,7 +27,8 @@ public class Main {
     public static void main(String[] args) throws SQLException {
 
 //       KONEKCIJA NA MySQL
-//       var con = MySQL.getConnection();
+
+       var con = MySQL.getConnection();
         SQLManager.createTables();
 
         Person per = new Person("+385995021254", "ivana.bubalo2@gmail.com", "Ivana", "Bubalo");
@@ -54,17 +55,15 @@ public class Main {
                 edit();
             } else if (choice == 4) {
                 delete();
-            } else /*if (choice == 5){
+            } else if (choice == 5){
                 call();
-            } else*/ {
+            } else {
                 System.out.println("Unknown command entered, try again");
             }
         }
         while (choice < 6);
 
     }
-
-
 
     private static void updateList() throws SQLException {
         List<EntitySuper> listPerson = MySQL.selectPerson();
@@ -74,12 +73,16 @@ public class Main {
         people = listOfAll;
     }
 
+
+
     private static void izlistaj() throws SQLException {
         updateList();
         for (EntitySuper var : people) {
             System.out.println(var);
         }
     }
+
+    //todo: napraviti metodu da izlista povijest poziva
 
 
     // todo sql
@@ -99,7 +102,9 @@ public class Main {
     }
 
     private static void dodajTvrtku() {
-        System.out.println("Please provide your business name and cell phone number below:\n Name: ");//        MySQL.onUpdate("ALTER TABLE abstract(id) AUTO_INCREMENT"); // provjeri jel mi ovo treba
+        System.out.println("Please provide your business name and cell phone number below:\n Name: ");
+
+        //        MySQL.onUpdate("ALTER TABLE test.company AUTO_INCREMENT (company_id)"); // provjeri jel mi ovo treba
         String name = in.nextLine();
         String tel_number = brojMobitela();
         System.out.println("Email: ");
@@ -149,36 +154,40 @@ public class Main {
         else printMenu();
     }
 
+
     //todo:    metoda za pozivanje; kad se izvrši call (id 1 zove nekog id-a, upisati to u history) + timestamp i trajanje poziva
-//    private static void call(){
-//        System.out.println("Who do you want to call? Enter the id: ");  // pozivatelj ima id = 1, receiver je neki idući
-//        int oznaka;
-//        try {
-//            oznaka = Integer.parseInt(in.nextLine());
-////            System.out.println(ANSI_YELLOW +"Calling.. ");
-////            System.out.println(oznaka + ANSI_RESET);
-//
-//        } catch(Exception e){
-//            System.out.println("Invalid input, please try again: ");
-//            oznaka = Integer.parseInt(in.nextLine());
-//        }
-//        for (EntitySuper p : people){
-//            if (p.getId() == oznaka){
-//                System.out.println("Calling  " + p);
-//
-//
-//                //todo sad updejtaj tablicu da se radi call
-//
-//                if (p instanceof Company) {
-//                    MySQL.onUpdate( );
-//                }
-//            }
-//
-//        }
-//       // History history = new History();
-//        //MySQL.insertCallHistory(history);
-//
-//    }
+    private static void call(){
+        System.out.println("Who do you want to call? Enter the id: ");  // pozivatelj ima id = 1, receiver je neki idući
+        int oznaka;
+        try {
+            oznaka = Integer.parseInt(in.nextLine());
+//            System.out.println(ANSI_YELLOW +"Calling.. ");
+//            System.out.println(oznaka + ANSI_RESET);
+
+        } catch(Exception e){
+            System.out.println("Invalid input, please try again: ");
+            oznaka = Integer.parseInt(in.nextLine());
+        }
+        for (EntitySuper p : people){
+            if (p.getId() == oznaka){
+                System.out.println("Calling  " + p);
+
+                //todo sad updejtaj tablicu da se radi call
+
+                if (p instanceof Person) {
+                    MySQL.updateHistoryPerson((Person) p);
+                } else {
+                    MySQL.updateHistoryCompany((Company) p);
+                }
+                counter++;
+
+            }
+
+        }
+       // History history = new History();
+        //MySQL.insertCallHistory(history);
+      //  counter++;
+    }
 
     private static void edit() {
 
