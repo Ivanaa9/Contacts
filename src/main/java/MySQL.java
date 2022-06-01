@@ -11,16 +11,17 @@ public class MySQL {
     public static final String insertCompanyStatement = "INSERT INTO company (company_id, company_name, tel_number, email) VALUES(?,?,?,?)";
     public static final String insertPersonStatement = "INSERT INTO person (person_id, firstname, lastname, tel_number, email) VALUES(?,?,?,?,?)";
 
-
     public static final String selectCompany = "SELECT * FROM company";
     public static final String selectPerson = "SELECT * FROM person";
 
     public static final String updateCompany = "UPDATE company SET company_name=?, tel_number=?, email=? WHERE company_id = ?";
     public static final String updatePerson = "UPDATE person SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
 
+    public static final String updateHistory = "UPDATE call_history SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
+
     public static final String deleteCompany = "DELETE FROM company WHERE company_id = ? ";
     public static final String deletePerson = "DELETE FROM person WHERE person_id = ? ";
-
+// todo call start, call en
 
     public static Statement getConnection() {
         connection = null;
@@ -101,6 +102,10 @@ public class MySQL {
         }
         return false;
     }
+
+//    public static boolean insertCallHistory(){
+//
+//    }
 
     //todo: napraviti metodu za insertanje u tablicu call_history
     // napravit cu novu klasu s atributima

@@ -1,15 +1,9 @@
-import main.data.MySQL;
-import main.data.SQLManager;
-import main.model.Company;
-import main.model.EntitySuper;
-import main.model.Person;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 
 public class Main {
@@ -22,11 +16,12 @@ public class Main {
     public static final String ANSI_YELLOW = "\u001B[33m";
 
     private static void printMenu() {
-        System.out.println(ANSI_YELLOW + "Sto zelite napraviti? Upišite broj opcije.");
-        System.out.println("1. Prikazati sve kontakte");
-        System.out.println("2. Upisati novi kontakt");
-        System.out.println("3. Urediti kontakt");
-        System.out.println("4. Izbrisati kontakt" + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + "What do you want to do? Enter the option number.");
+        System.out.println("1. Show all contacts");
+        System.out.println("2. Add a new contact");
+        System.out.println("3. Edit contact");
+        System.out.println("4. Delete contact");
+        System.out.println("5. Make a call" + ANSI_RESET);
     }
 
     public static void main(String[] args) throws SQLException {
@@ -37,11 +32,11 @@ public class Main {
 
         Person per = new Person("+385995021254", "ivana.bubalo2@gmail.com", "Ivana", "Bubalo");
         MySQL.insertPerson(per);
-        System.out.println("Uspješno ste dodali kontakt " + per);
+        System.out.println("You have successfully added a contact " + per);
 
         Company com = new Company("+385994567898", "koios@hr", "koios");
         MySQL.insertCompany(com);
-        System.out.println("Uspješno ste dodali kontakt " + com);
+        System.out.println("You have successfully added a contact" + com);
 
         updateList();
 
@@ -59,9 +54,9 @@ public class Main {
                 edit();
             } else if (choice == 4) {
                 delete();
-            } /*else if (choice == 5){
-                call(); // todo: napraviti metodu za pozivanje i novu tablicu u bazi u koju se sprema svaki put kad se pozove metoda call
-            } */else {
+            } else /*if (choice == 5){
+                call();
+            } else*/ {
                 System.out.println("Unknown command entered, try again");
             }
         }
@@ -87,10 +82,11 @@ public class Main {
     }
 
 
+    // todo sql
     private static String brojMobitela() {
         String broj, pozivni;
         do {
-            System.out.println("Upisite broj u formatu +385XXXXXXXXX i do 13 znakova duljine:");
+            System.out.println("Enter the number in the format +385XXXXXXXXX and up to 13 characters long:");
             broj = in.nextLine();   // stavit uvjet da broj ima minimalno 4 znaka, u protivnom napuni pozivni sa ...
             if (broj.length() < 4) {           //TVOJA IDEJA
                 pozivni = "";
@@ -103,7 +99,7 @@ public class Main {
     }
 
     private static void dodajTvrtku() {
-        System.out.println("U nastavku navedite ime tvrtke i broj mobitela osobe:\n Ime: ");//        MySQL.onUpdate("ALTER TABLE abstract(id) AUTO_INCREMENT"); // provjeri jel mi ovo treba
+        System.out.println("Please provide your business name and cell phone number below:\n Name: ");//        MySQL.onUpdate("ALTER TABLE abstract(id) AUTO_INCREMENT"); // provjeri jel mi ovo treba
         String name = in.nextLine();
         String tel_number = brojMobitela();
         System.out.println("Email: ");
@@ -112,7 +108,7 @@ public class Main {
         Company com = new Company(tel_number, email, name);
         MySQL.insertCompany(com);
 
-        System.out.println("Upsješno ste dodali kontakt " + name);
+        System.out.println("You have successfully added a contact " + name);
         try {
             updateList();
         } catch (SQLException e) {
@@ -123,9 +119,9 @@ public class Main {
 
     private static void dodajOsobu() {
 
-        System.out.println("U nastavku navedite ime, prezime i broj mobitela osobe:\n Ime: ");
+        System.out.println("Please provide first and last name and cell phone number below: \n First name: ");
         String name = in.nextLine();
-        System.out.println("Prezime: ");
+        System.out.println("Last name: ");
         String surname = in.nextLine();
         String tel_number = brojMobitela();  //TODO: napravila
         System.out.println("Email: ");
@@ -133,7 +129,7 @@ public class Main {
 
         Person per = new Person(tel_number, email, name, surname);
         MySQL.insertPerson(per);
-        System.out.println("Uspješno ste dodali kontakt " + name);
+        System.out.println("You have successfully added a contact" + name);
 
         try {
             updateList();
@@ -141,7 +137,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-
+    // todo: zavrsi
     private static void dodaj() {
 
         System.out.println(ANSI_YELLOW + "Želite li dodati osobu ili tvrtku? Odaberite broj opcije: " + ANSI_RESET);
@@ -152,6 +148,37 @@ public class Main {
         else if (choice == 2) dodajTvrtku();
         else printMenu();
     }
+
+    //todo:    metoda za pozivanje; kad se izvrši call (id 1 zove nekog id-a, upisati to u history) + timestamp i trajanje poziva
+//    private static void call(){
+//        System.out.println("Who do you want to call? Enter the id: ");  // pozivatelj ima id = 1, receiver je neki idući
+//        int oznaka;
+//        try {
+//            oznaka = Integer.parseInt(in.nextLine());
+////            System.out.println(ANSI_YELLOW +"Calling.. ");
+////            System.out.println(oznaka + ANSI_RESET);
+//
+//        } catch(Exception e){
+//            System.out.println("Invalid input, please try again: ");
+//            oznaka = Integer.parseInt(in.nextLine());
+//        }
+//        for (EntitySuper p : people){
+//            if (p.getId() == oznaka){
+//                System.out.println("Calling  " + p);
+//
+//
+//                //todo sad updejtaj tablicu da se radi call
+//
+//                if (p instanceof Company) {
+//                    MySQL.onUpdate( );
+//                }
+//            }
+//
+//        }
+//       // History history = new History();
+//        //MySQL.insertCallHistory(history);
+//
+//    }
 
     private static void edit() {
 
@@ -173,7 +200,7 @@ public class Main {
                 System.out.println("Izmjenite ime, prezime ili telefonski broj. " +
                         "Ukoliko ne zelite mijenjati neki podatak, stisnite Enter na tom mjestu.");
 
-                if (p instanceof Company) {
+                if (p instanceof Company) {    //todo:  OVDJE SAM STALA!
                     System.out.println("Novo ime tvrtke: ");
                     String new_comname = in.nextLine();
                     if (!new_comname.equals("")) {
@@ -228,22 +255,7 @@ public class Main {
     }
 
 
-    private static void call(){
-        System.out.println("Upisite oznaku kontakta kojeg zelite nazvati: ");
-        int oznaka;
-        try {
-            oznaka = Integer.parseInt(in.nextLine());
-        } catch(Exception e){
-            System.out.println("Neispravan unos, probajte ponovno");
-            oznaka = Integer.parseInt(in.nextLine());
-        }
-        for (EntitySuper p : people){
-            if (p.getId() == oznaka){
 
-                // todo: zavrsi
-            }
-        }
-    }
 
     private static void delete() {
         System.out.println("Upišite oznaku kontakta kojeg zelite izbrisat. ");

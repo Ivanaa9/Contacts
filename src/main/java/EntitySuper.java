@@ -4,6 +4,7 @@ public abstract class EntitySuper {
     private String email;
     private static int counter = 0;
 
+
     public String getTel_number() {return tel_number;}
     public void setTel_number(String tel_number) {
         this.tel_number = tel_number;

@@ -25,11 +25,12 @@ public class SQLManager {
         MySQL.onUpdate("CREATE TABLE IF NOT EXISTS call_history(\n" +
                 "\tcall_history_id INT NOT NULL, \n" +
                 "\tperson_id INT NOT NULL, \n" +
-                "\tcompany_id INT NOT NULL, \n" +
+                "\tcompany_id INT NOT NULL, \n" +     // staviti da je caller_id = 1 uvijek
                 "\tPRIMARY KEY (call_history_id), \n" +
                 "\tFOREIGN KEY (person_id) REFERENCES person(person_id), \n" +
-                "\tFOREIGN KEY (company_id) REFERENCES company(company_id), \n" +
-                "\tcall_date DATE);");
+                "\tFOREIGN KEY (company_id) REFERENCES company(company_id), \n" + // pozivatelj ce zvati ili person ili company, znaci da imam caller_id i receiver_id
+                "\tcall_started DATE)," +
+                "\tcall_ended DATE");
 
         System.out.println("Tables in database created.");
     }
