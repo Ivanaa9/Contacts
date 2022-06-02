@@ -1,4 +1,5 @@
 public class Company extends EntitySuper {
+
     private String companyName;  // comname - ime firme
 
     public Company(String tel_number, String email, String companyName) {

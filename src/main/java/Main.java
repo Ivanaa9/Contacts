@@ -2,18 +2,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.sql.Timestamp;
-import java.time.Instant;
+
 
 
 public class Main {
 
     private static final Scanner in = new Scanner(System.in);  //Pitanje: sto znaci warning 'Field 'in'/'people' may be final
     private static List<EntitySuper> people = new ArrayList<>();
+    private static List<EntitySuper> history = new ArrayList<>();
     private static int counter = 0;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_CYAN = "\u001b[36m";
 
     private static void printMenu() {
         System.out.println(ANSI_YELLOW + "What do you want to do? Enter the option number.");
@@ -28,7 +29,7 @@ public class Main {
 
 //       KONEKCIJA NA MySQL
 
-       var con = MySQL.getConnection();
+       //var con = MySQL.getConnection();
         SQLManager.createTables();
 
         Person per = new Person("+385995021254", "ivana.bubalo2@gmail.com", "Ivana", "Bubalo");
@@ -40,7 +41,6 @@ public class Main {
         System.out.println("You have successfully added a contact" + com);
 
         updateList();
-
 
         int choice;
         do {
@@ -61,7 +61,7 @@ public class Main {
                 System.out.println("Unknown command entered, try again");
             }
         }
-        while (choice < 6);
+        while (choice < 7);
 
     }
 
@@ -74,7 +74,6 @@ public class Main {
     }
 
 
-
     private static void izlistaj() throws SQLException {
         updateList();
         for (EntitySuper var : people) {
@@ -82,10 +81,7 @@ public class Main {
         }
     }
 
-    //todo: napraviti metodu da izlista povijest poziva
 
-
-    // todo sql
     private static String brojMobitela() {
         String broj, pozivni;
         do {
@@ -142,11 +138,10 @@ public class Main {
             e.printStackTrace();
         }
     }
-    // todo: zavrsi
     private static void dodaj() {
 
-        System.out.println(ANSI_YELLOW + "Želite li dodati osobu ili tvrtku? Odaberite broj opcije: " + ANSI_RESET);
-        System.out.println("1. Dodaj osobu\n" + "2. Dodaj tvrtku");
+        System.out.println(ANSI_YELLOW + "Want to add a person or company? Select option number: " + ANSI_RESET);
+        System.out.println("1. Add person\n" + "2. Add company");
         int choice = Integer.parseInt(in.nextLine());
 
         if (choice == 1) dodajOsobu();
@@ -156,13 +151,14 @@ public class Main {
 
 
     //todo:    metoda za pozivanje; kad se izvrši call (id 1 zove nekog id-a, upisati to u history) + timestamp i trajanje poziva
+
     private static void call(){
         System.out.println("Who do you want to call? Enter the id: ");  // pozivatelj ima id = 1, receiver je neki idući
         int oznaka;
         try {
             oznaka = Integer.parseInt(in.nextLine());
-//            System.out.println(ANSI_YELLOW +"Calling.. ");
-//            System.out.println(oznaka + ANSI_RESET);
+            System.out.println(ANSI_CYAN +"Calling.. " + oznaka + ANSI_RESET);
+
 
         } catch(Exception e){
             System.out.println("Invalid input, please try again: ");
@@ -170,7 +166,7 @@ public class Main {
         }
         for (EntitySuper p : people){
             if (p.getId() == oznaka){
-                System.out.println("Calling  " + p);
+                //System.out.println("Calling  " + p); // todo:  PROMJENA iz 'p' u 'p.getTel'
 
                 //todo sad updejtaj tablicu da se radi call
 
@@ -179,24 +175,24 @@ public class Main {
                 } else {
                     MySQL.updateHistoryCompany((Company) p);
                 }
-                counter++;
-
             }
-
         }
+
        // History history = new History();
         //MySQL.insertCallHistory(history);
       //  counter++;
     }
 
+// TODO: PREVESTI NA ENG
+
     private static void edit() {
 
-        System.out.println("Upišite oznaku kontakta: ");
+        System.out.println("Enter contact ID: ");
         int oznaka;
         try {
             oznaka = Integer.parseInt(in.nextLine());
-        } catch(Exception e){
-            System.out.println("Neispravan unos, probajte ponovno");
+        } catch (Exception e) {
+            System.out.println("Invalid entry, try again");
             oznaka = Integer.parseInt(in.nextLine());
         }
         // String getIdToEdit = String.valueOf(Integer.parseInt(in.nextLine()));
@@ -204,67 +200,67 @@ public class Main {
         for (EntitySuper p : people) {      //people je lista imenika, 'p' je cijeli redak (objekt) u listi; u isti imenik trpam firme i ljude
             if (p.getId() == oznaka) {
 
-                System.out.println("Osoba s tom oznakom je " + p); //hocu da mi prvo ispise kontakt s tim ID-em, a onda mijenja njegove vrijednosti
+                System.out.println("The person with that ID is " + p); //hocu da mi prvo ispise kontakt s tim ID-em, a onda mijenja njegove vrijednosti
 
-                System.out.println("Izmjenite ime, prezime ili telefonski broj. " +
-                        "Ukoliko ne zelite mijenjati neki podatak, stisnite Enter na tom mjestu.");
+                System.out.println("Edit first name, last name or phone number. " +
+                        "If you do not want to change any data, press Enter.");
 
                 if (p instanceof Company) {    //todo:  OVDJE SAM STALA!
-                    System.out.println("Novo ime tvrtke: ");
+                    System.out.println("New company name: ");
                     String new_comname = in.nextLine();
                     if (!new_comname.equals("")) {
                         ((Company) p).setCompanyName(new_comname);
 
                     }
+                    MySQL.updateCompany((Company) p);
                 }
 
                 if (p instanceof Person) {
-                    System.out.println("Novo ime: ");
+                    System.out.println("New name: ");
                     String new_firstname = in.nextLine();
                     if (!new_firstname.equals("")) {
                         ((Person) p).setFirstname(new_firstname);
                     }
+
 
                     System.out.println("Novo prezime: ");
                     String new_lastname = in.nextLine();
                     if (!new_lastname.equals("")) {
                         ((Person) p).setLastname(new_lastname);
                     }
-
+                    MySQL.updatePerson((Person) p);
+                    //dodala, drugi pokusajMySQL.updatePerson((Person) p);  //dodala, drugi pokusaj
                 }
-                System.out.println("Novi broj");
+
+                System.out.println("New phone number");
                 if (!in.nextLine().equals("")) {
                     p.setTel_number(brojMobitela());
                 }
 
-                System.out.println("Novi email: ");
+                System.out.println("New email: ");
                 String new_email = in.nextLine();
                 if (!new_email.equals("")) {
                     p.setEmail(new_email);
                 }
                 System.out.println(p);
+                // ovo ispod sam zakomentirala jer nije radila edit metoda.
+                // pokusat cu updatePerson direktno ispod Persona, updateCompany ispod Company-a
             }
+
             if (p instanceof Person) {
                 MySQL.updatePerson((Person) p);
             } else {
                 MySQL.updateCompany((Company) p);
             } //todo: nešto ne valja, popravi
+
+
             try {
                 updateList();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
-        try {
-            updateList();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
-
-
-
 
     private static void delete() {
         System.out.println("Upišite oznaku kontakta kojeg zelite izbrisat. ");
@@ -293,7 +289,7 @@ public class Main {
         people.remove(toDelete);
 
 
-    }  // TODO: rijesiti. upisati id, pronaci ga u abstract-u, pobrisati ga iz njega, company i person
+    }
 
 
 }

@@ -1,15 +1,23 @@
+
+import com.sun.jdi.IntegerValue;
+
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class MySQL {
 
     private static Connection connection;
     private static Statement statement;
 
+    public static final String deleteCompany = "DELETE FROM company WHERE company_id = ? ";
+    public static final String deletePerson = "DELETE FROM person WHERE person_id = ? ";
+
     public static final String insertCompanyStatement = "INSERT INTO company (company_id, company_name, tel_number, email) VALUES(?,?,?,?)";
-    public static final String insertPersonStatement = "INSERT INTO person (person_id, firstname, lastname, tel_number, email) VALUES(?,?,?,?,?)";
+    public static final String insertPersonStatement = "INSERT INTO person (person_id, firstname, lastname, tel_number, email) VALUES(?,?,?,?,?)";  //TODO: promijeni redosljed kljuceva da bude kao u SQL manageru
 
     public static final String selectCompany = "SELECT * FROM company";
     public static final String selectPerson = "SELECT * FROM person";
@@ -17,41 +25,44 @@ public class MySQL {
     public static final String updateCompany = "UPDATE company SET company_name=?, tel_number=?, email=? WHERE company_id = ?";
     public static final String updatePerson = "UPDATE person SET firstname=?, lastname=?, tel_number=?, email=? WHERE person_id = ?";
 
-    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id) AND UPDATE TIMESTAMP"; //TODO  PROVJERI KAKO UBACITI TIMESTAMP!
-    public static final String updateHistoryPerson = "INSERT INTO call_history call_history(person_id)";
+    public static final String updateHistoryCompany = "INSERT INTO call_history ( company_id, call_started) VALUES(?,?)";
+    public static final String updateHistoryPerson = "INSERT INTO call_history ( person_id, call_started) VALUES(?,?)";
 
-    public static final String deleteCompany = "DELETE FROM company WHERE company_id = ? ";
-    public static final String deletePerson = "DELETE FROM person WHERE person_id = ? ";
+//    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id, call_started) VALUES(?,?)";
+//    public static final String updateHistoryPerson = "INSERT INTO call_history (person_id, call_started) VALUES(?,?)";
+
+    public static final String updateHistory = "UPDATE call_history";
+    //   public static final String selectHistory = "SELECT * FROM call_history";
+
+//    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id, call_started) AND UPDATE TABLE";
+//    public static final String updateHistoryPerson = "INSERT INTO call_history (person_id, call_started) AND UPDATE TABLE";
 
 
     public static boolean updateHistoryPerson(Person person) {
+
+
         try (CallableStatement st = connection.prepareCall(updateHistoryPerson)) {
-            st.setInt(5,person.getId());
-            st.setString(1, person.getFirstname());
-            st.setString(2, person.getLastname());
-            st.setString(3, person.getTel_number());
-            st.setString(4, person.getEmail());
 
-            st.execute();
-            return true
-
+            st.setInt(1, person.getId());
+            st.setTimestamp(2, Timestamp.from(Instant.now()));
+            st.executeUpdate();
+            return true;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         return false;
     }
 
+
+
     public static boolean updateHistoryCompany(Company company) {
         try (CallableStatement st = connection.prepareCall(updateHistoryCompany)) {
 
-            st.setInt(4, company.getId());
-            st.setString(1, company.getCompanyName());
-            st.setString(2, company.getTel_number());
-            st.setString(3, company.getEmail());
+            st.setInt(2, company.getId());
+            st.setTimestamp(3, Timestamp.from(Instant.now()));
 
-            st.execute();
+            st.executeUpdate();
             return true;
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -75,7 +86,7 @@ public class MySQL {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
 
-            System.out.println("Database now online ");
+            //System.out.println("Database now online ");
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -96,7 +107,6 @@ public class MySQL {
         getConnection();
         try {
             statement.execute(sql);
-            System.out.println("UŠLA");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -147,7 +157,52 @@ public class MySQL {
     //todo: napraviti metodu za insertanje u tablicu call_history
     // napravit cu novu klasu s atributima
 
-    //  public static
+//    public static List<EntitySuper> selectHistory() throws SQLException {
+//        List<EntitySuper> list = new ArrayList<>();
+//        Statement connection = getConnection();
+//        ResultSet resultSetHistory = null;
+//        ResultSet resultSetCompany = null;
+//        ResultSet resultPerson = null;
+//
+//        try {
+//            resultSetHistory = connection.executeQuery(selectHistory);
+//            //ResultSet resultSetCompany = connection.executeQuery(selectCompany);
+//            //ResultSet resultPerson = connection.executeQuery(selectPerson);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+////        try {
+////            resultSetCompany = connection.executeQuery(selectCompany);
+////        } catch (SQLException e) {
+////            e.printStackTrace();
+////        }
+////        try {
+////            resultPerson = connection.executeQuery(selectPerson);
+////        } catch (SQLException e) {
+////            e.printStackTrace();
+////        }
+//
+//        try {
+//
+//            if (!resultSetHistory.next()) {
+//                System.out.println("There are no calls in history");
+//            }else {
+//                do {
+//                    int id = resultSetHistory.getInt("call_history_id");
+//                    int idp = resultSetPerson.getInt("person_id");
+//                    int idc = resultSetCompany.getInt("company_id");
+//
+//                    EntitySuper hist = new EntitySuper(call_history_id, person_id, company_id, call_started);
+//                    list.add(hist);
+//                } while (resultSetHistory.next());
+//            }
+//            return list;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
 
     public static List<EntitySuper> selectCompany() throws SQLException {
         List<EntitySuper> list = new ArrayList<>();
@@ -155,15 +210,17 @@ public class MySQL {
         ResultSet resultSetCompany = connection.executeQuery(selectCompany);
         try {
             if (!resultSetCompany.next()) {   //ako ne postoji sljedeći objekt (tj prvi objekt, jer krećemo od nule/ničega pa next)
-                System.out.println("Imenik 'company' je prazan");      //todo: namjestiti metodu tako da povuce i ispise i podatke iz company i person
+                System.out.println("The 'company' directory is empty");
             } else {
                 do {
                     int id = resultSetCompany.getInt("company_id");
                     String company_name = resultSetCompany.getString("company_name");
                     String email = resultSetCompany.getString("email");
                     String phone = resultSetCompany.getString("tel_number");
+
                     Company comp = new Company(id, phone, email, company_name);
                     list.add(comp);
+
                 } while (resultSetCompany.next());
             }
             return list;
@@ -198,10 +255,9 @@ public class MySQL {
         return null;
     }
 
-
     public static boolean updatePerson(Person person) {
         try (CallableStatement st = connection.prepareCall(updatePerson)) {
-            st.setInt(5,person.getId());
+            st.setInt(5, person.getId());
             st.setString(1, person.getFirstname());
             st.setString(2, person.getLastname());
             st.setString(3, person.getTel_number());

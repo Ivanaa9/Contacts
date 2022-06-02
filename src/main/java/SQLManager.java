@@ -2,12 +2,12 @@
 public class SQLManager {
 
     public static void createTables(){
-        System.out.println("Dropping tables");
+        //System.out.println("Dropping tables");
         MySQL.onUpdate("DROP TABLE IF EXISTS call_history");
         MySQL.onUpdate("DROP TABLE IF EXISTS person");
         MySQL.onUpdate("DROP TABLE IF EXISTS company");
 
-        System.out.println("Tables dropped, creating new ones..");
+        //System.out.println("Tables dropped, creating new ones..");
 
         MySQL.onUpdate("CREATE TABLE IF NOT EXISTS test.person(\n" +
                 "\tperson_id INT NOT NULL, \n" +
@@ -25,17 +25,14 @@ public class SQLManager {
                 "\tPRIMARY KEY (company_id) );");
 
         MySQL.onUpdate("CREATE TABLE IF NOT EXISTS test.call_history(\n" +
-                "\tcall_history_id INT NOT NULL, \n" +
-                "\tperson_id INT NOT NULL, \n" +
-                "\tcompany_id INT NOT NULL, \n" +     // staviti da je caller_id = 1 uvijek
+                "\tcall_history_id INT NOT NULL AUTO_INCREMENT, \n" +
+                "\tperson_id INT , \n" +
+                "\tcompany_id INT , \n" +
                 "\tcall_started TIMESTAMP," +
                 "\tPRIMARY KEY (call_history_id), \n" +
                 "\tFOREIGN KEY (person_id) REFERENCES person (person_id), \n" +
                 "\tFOREIGN KEY (company_id) REFERENCES company (company_id));");
 
-        // pozivatelj ce zvati ili person ili company, znaci da imam caller_id i receiver_id
-
-
-        System.out.println("Tables in database created.");
+        //System.out.println("Tables in database created.");
     }
 }
