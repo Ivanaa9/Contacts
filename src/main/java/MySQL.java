@@ -58,8 +58,8 @@ public class MySQL {
     public static boolean updateHistoryCompany(Company company) {
         try (CallableStatement st = connection.prepareCall(updateHistoryCompany)) {
 
-            st.setInt(2, company.getId());
-            st.setTimestamp(3, Timestamp.from(Instant.now()));
+            st.setInt(1, company.getId());
+            st.setTimestamp(2, Timestamp.from(Instant.now()));
 
             st.executeUpdate();
             return true;
