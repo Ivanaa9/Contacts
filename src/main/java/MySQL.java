@@ -32,7 +32,7 @@ public class MySQL {
 //    public static final String updateHistoryPerson = "INSERT INTO call_history (person_id, call_started) VALUES(?,?)";
 
     public static final String updateHistory = "UPDATE call_history";
-    //   public static final String selectHistory = "SELECT * FROM call_history";
+    public static final String selectHistory = "SELECT * FROM call_history";
 
 //    public static final String updateHistoryCompany = "INSERT INTO call_history (company_id, call_started) AND UPDATE TABLE";
 //    public static final String updateHistoryPerson = "INSERT INTO call_history (person_id, call_started) AND UPDATE TABLE";
@@ -53,8 +53,6 @@ public class MySQL {
         return false;
     }
 
-
-
     public static boolean updateHistoryCompany(Company company) {
         try (CallableStatement st = connection.prepareCall(updateHistoryCompany)) {
 
@@ -68,7 +66,6 @@ public class MySQL {
         }
         return false;
     }
-
 
     public static Statement getConnection() {
         connection = null;
@@ -229,6 +226,35 @@ public class MySQL {
         }
         return null;
     }
+
+//    public static List<EntitySuper> selectHistory() throws SQLException {        // POCELA SAM PISATI ALI BIH TREBALA RADIT DRUGU KLASU PA NECU
+//        List<EntitySuper> list = new ArrayList<>();
+//        Statement connection = getConnection();
+//        ResultSet resultSetHistory = connection.executeQuery(selectHistory);
+//        try {
+//            if (!resultSetHistory.next()) {
+//                System.out.println("The 'history' directory is empty");
+//            } else {
+//                do {
+//               //     int id = resultSetHistory.getInt("call_history_id");
+//                    int person_id = resultSetHistory.getInt("person_id");
+//                    int company_id = resultSetHistory.getInt("company_id");
+//                    Timestamp call_started = resultSetHistory.getTimestamp("call_started");
+//
+//                    List<EntitySuper> listHistory = new EntitySuper(person_id, company_id, call_started);
+//
+//                    EntitySuper history = new EntitySuper(person_id, company_id, call_started);
+//                    list.add(history);
+//
+//                } while (resultSetHistory.next());
+//            }
+//            return list;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
     public static List<EntitySuper> selectPerson() throws SQLException {
         List<EntitySuper> list = new ArrayList<>();

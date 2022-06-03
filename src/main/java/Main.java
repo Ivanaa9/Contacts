@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+// TODO: napraviti klasu History zbog izlistavanja povijesti poziva
 
 public class Main {
 
@@ -22,7 +22,8 @@ public class Main {
         System.out.println("2. Add a new contact");
         System.out.println("3. Edit contact");
         System.out.println("4. Delete contact");
-        System.out.println("5. Make a call" + ANSI_RESET);
+        System.out.println("5. Make a call"+ ANSI_RESET);
+//        System.out.println("6. Show call history" + ANSI_RESET);
     }
 
     public static void main(String[] args) throws SQLException {
@@ -57,11 +58,13 @@ public class Main {
                 delete();
             } else if (choice == 5){
                 call();
-            } else {
+            } /*else if (choice == 6){
+                history();
+            }*/ else {
                 System.out.println("Unknown command entered, try again");
             }
         }
-        while (choice < 7);
+        while (choice < 8);  //todo: povecati na 8 ako treba
 
     }
 
@@ -80,6 +83,16 @@ public class Main {
             System.out.println(var);
         }
     }
+
+//    private static void history() throws SQLException {
+//
+////    for (EntitySuper var : history){
+////        MySQL.updateHistory(history);
+////        System.out.println(var);
+////    }
+//        List<EntitySuper> listHistory = MySQL.selectHistory();
+//        System.out.println(listHistory);
+//    }
 
 
     private static String brojMobitela() {
